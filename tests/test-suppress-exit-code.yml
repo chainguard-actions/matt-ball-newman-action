@@ -1,0 +1,21 @@
+name: Test Newman suppressExitCode
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        name: Run Newman with failing collection and suppressExitCode
+        uses: .
+        with:
+          collection: tests/fixtures/failing-collection.json
+          suppressExitCode: 'true'
+          reporters: '["cli"]'
+
+      - name: Assert action succeeded despite test failures (suppressExitCode=true)
+        run: |
+          echo "Newman action completed without propagating exit code"
+          echo "PASS: suppressExitCode prevented failure from propagating"

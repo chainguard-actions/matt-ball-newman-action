@@ -1,0 +1,21 @@
+name: Test Newman with folder selection
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        name: Run Newman targeting a specific folder
+        uses: .
+        with:
+          collection: tests/fixtures/folder-collection.json
+          folder: MyFolder
+          reporters: '["cli"]'
+
+      - name: Assert action completed successfully with folder selection
+        run: |
+          echo "Newman action completed with folder selection without error"
+          echo "PASS"

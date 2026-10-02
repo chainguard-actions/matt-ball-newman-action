@@ -1,0 +1,24 @@
+name: Test Newman with network and security options
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        name: Run Newman with network and security options
+        uses: .
+        with:
+          collection: tests/fixtures/simple-collection.json
+          ignoreRedirects: 'true'
+          insecure: 'true'
+          insecureFileRead: 'true'
+          workingDir: tests/fixtures
+          reporters: '["cli"]'
+
+      - name: Assert action completed successfully with network options
+        run: |
+          echo "Newman action completed with network and security options without error"
+          echo "PASS"

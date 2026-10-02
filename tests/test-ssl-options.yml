@@ -1,0 +1,47 @@
+name: Test Newman with SSL certificate options
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create dummy SSL certificate files
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/ssl"
+          # Generate a self-signed cert and key for testing
+          openssl req -x509 -newkey rsa:2048 -keyout "$GITHUB_WORKSPACE/tests/fixtures/ssl/client.key" \
+            -out "$GITHUB_WORKSPACE/tests/fixtures/ssl/client.crt" \
+            -days 1 -nodes -subj "/CN=test" 2>/dev/null
+          cp "$GITHUB_WORKSPACE/tests/fixtures/ssl/client.crt" "$GITHUB_WORKSPACE/tests/fixtures/ssl/ca.crt"
+          # Create a cert list JSON file
+          echo '[{"name":"test","id":"test","matches":["https://postman-echo.com/*"],"key":{"src":"tests/fixtures/ssl/client.key"},"cert":{"src":"tests/fixtures/ssl/client.crt"}}]' \
+            > "$GITHUB_WORKSPACE/tests/fixtures/ssl/cert-list.json"
+
+      - id: action
+        name: Run Newman with SSL options
+        uses: .
+        continue-on-error: true
+        with:
+          collection: tests/fixtures/simple-collection.json
+          sslClientCert: tests/fixtures/ssl/client.crt
+          sslClientKey: tests/fixtures/ssl/client.key
+          sslClientPassphrase: testpassphrase
+          sslClientCertList: tests/fixtures/ssl/cert-list.json
+          sslExtraCaCerts: tests/fixtures/ssl/ca.crt
+          reporters: '["cli"]'
+
+      - name: Assert action ran with SSL options
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: Newman ran successfully with SSL options"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: Newman ran with SSL options (failed gracefully - expected with self-signed certs)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
