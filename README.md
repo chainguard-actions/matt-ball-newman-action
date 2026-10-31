@@ -6,9 +6,9 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v2.0.0 | [`v2.0.0`](https://github.com/chainguard-actions/matt-ball-newman-action/tree/v2.0.0) | [`170d252`](https://github.com/matt-ball/newman-action/commit/170d252f10d199d75d6be4c739b48a3bd5f15ece) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| v2.0.0 | [`v2.0.0`](https://github.com/chainguard-actions/matt-ball-newman-action/tree/v2.0.0) | [`170d252`](https://github.com/matt-ball/newman-action/commit/170d252f10d199d75d6be4c739b48a3bd5f15ece) | [`HARDENING.md`](https://github.com/chainguard-actions/matt-ball-newman-action/blob/v2.0.0/HARDENING.md) |
 
 ## Privacy
 
